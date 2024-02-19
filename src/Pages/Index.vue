@@ -11,7 +11,7 @@ import {onMounted, ref} from "vue";
 import qs from 'qs';
 import myAxios from '../plugins/myAxios.ts';
 import {showFailToast, showSuccessToast} from "vant";
-import UserCardList from "./UserCardList.vue";
+import UserCardList from "../components/UserCardList.vue";
 
 const route = useRoute();
 

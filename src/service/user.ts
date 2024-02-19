@@ -1,5 +1,5 @@
 import myAxios from "../plugins/myAxios.ts";
-import {getCurrentUserState, setCurrentUserState} from "../states/user.ts";
+import {setCurrentUserState} from "../states/user.ts";
 
 //这是用来保存接口的类
 
