@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const myAxios = axios.create({
-    baseURL: 'http://localhost:8999/api'
-});
+    baseURL: 'http://localhost:8999/api',
+    });
 
 
 //表示像前端发送请求的时候，要携带这个凭证

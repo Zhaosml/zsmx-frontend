@@ -22,8 +22,6 @@ const router = VueRouter.createRouter({
 app.use(router);
 
 
-
-
 //mount是挂载，就是把组件页面挂载到某个页面上
 /**
  * 理解为你有一面墙，墙就是index.html,

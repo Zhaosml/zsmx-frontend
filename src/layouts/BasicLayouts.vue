@@ -1,7 +1,7 @@
 <template>
 <!--导航栏组件-->
   <van-nav-bar
-      title="标题"
+      :title="title"
       right-text="按钮"
       left-arrow
       @click-left="onClickLeft"
@@ -29,17 +29,36 @@
 
 <!--setup  这里指定setup之后我们在script中定义的所有的变量，它都会暴露给咱们的页面，
  这样就不用再去写return了，这样就很方便了。不用写return-->
-<script setup>
+<script setup lang="ts">
 import {showToast} from "vant";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
+import {ref} from "vue";
+import routes from "../config/route.js";
+
+const DEFAULT_TITLE = '伙伴匹配'
+const title = ref(DEFAULT_TITLE)
 
 const router = useRouter();
+const route = useRoute();
+/*
+* 切换标题
+* */
+router.beforeEach((to,from) => {
+  const toPath = to.path
+  const route = routes.find((route) => {
+    return toPath == route.path;
+  })
+  title.value = route?.title ?? DEFAULT_TITLE;
+})
 
     const onClickLeft = () => router.back();
     const onClickRight = () => {
       router.push('/search');
     };
     const onChange = (index) => showToast(`标签 ${index}`);
+
+    // alert(route.path)
+
 </script>
 
 <style scoped>

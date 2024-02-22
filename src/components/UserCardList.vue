@@ -1,5 +1,6 @@
 <template>
-  <van-card v-for="user in props.userList"
+  <van-skeleton title avatar :row="3" :loading="props.loading" v-for="user in props.userList">
+  <van-card
             :desc="user.profile"
             :title="`${user.username} (${user.planetCode})`"
             :thumb="user.avatarUrl"
@@ -14,16 +15,21 @@
       <van-button size="mini">联系我</van-button>
     </template>
   </van-card>
+  </van-skeleton>
 </template>
 
 <script setup lang="ts">
 import {UserType} from "../models/user.ts";
+import {onMounted} from "vue";
 
 interface UserCardListProps {
+  loading:boolean;
   userList : UserType[]
 }
 const props = withDefaults(defineProps<UserCardListProps>(),
     {userList: []})
+
+
 </script>
 
 

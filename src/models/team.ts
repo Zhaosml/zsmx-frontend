@@ -10,4 +10,6 @@ export type TeamType ={
     "password"?: string,
     //  todo 定义枚举值
     "status":string,
+    "createUser":string,
+    "userId":number
 }

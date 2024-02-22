@@ -1,7 +1,7 @@
 <template>
   <div id="teamCardList">
     <van-card v-for="team in props.teamList"
-              :thumb="tup"
+              thumb="public/靓仔一起打篮球吗.jpeg"
               :desc="team.description"
               :title="`${team.name}`"
     >
@@ -15,24 +15,44 @@
         <div>{{"过期时间" + team.expireTime}}</div>
       </template>
       <template #footer>
-        <van-button size="small" type="primary" plain @click="doJoinTeam(team.id)"  >加入队伍</van-button>
+        <!--仅非队伍创建人、且未加入队伍的人可见-->
+        <van-button  v-if="team.userId !== currentUser?.id && !team.hasJoin"  size="small" type="primary" plain
+                     @click="doJoinTeam(team.id)"  >加入队伍
+        </van-button>
+        <!--仅创建人可见-->
+        <van-button v-if="team.userId == currentUser?.id" size="small" plain
+                    @click="doUpdateTeam(team.id)"  >更新队伍
+        </van-button>
+        <!-- 仅加入队伍可见 -->
+        <van-button v-if="team.hasJoin" size="small" plain
+                    @click="doQuitTeam(team.id)"  >退出队伍
+        </van-button>
+        <!--创建人不可见，仅已加入队伍的人可见-->
+        <van-button v-if="team.userId == currentUser?.id" size="small" plain type="danger"
+                    @click="doDeleteTeam(team.id)"  >解散队伍
+        </van-button>
       </template>
     </van-card>
   </div>
-
 </template>
-
+{{teamList}}
 <script setup lang="ts">
-import {TeamType} from "../service/team.ts";
-import {teamStatusEum} from "../constants/team.ts";
 import myAxios from "../plugins/myAxios.ts";
+import {TeamType} from "../models/team.ts";
+import {teamStatusEum} from "../constants/team.ts";
 import {showFailToast, showSuccessToast} from "vant";
+import {onMounted, ref} from "vue";
+import {getCurrentUser} from "../service/user.ts";
+import {useRouter} from "vue-router";
 
-
+const router = useRouter();
+const currentUser = ref();
+onMounted(async () =>{
+  currentUser.value =  await getCurrentUser();
+})
 interface TeamCardListProps {
   teamList : TeamType[]
 }
-const tup = "https://ggkt-1318325125.cos.ap-beijing.myqcloud.com/2023.05/24/028fed275c534d8a88a9c93ac7af506echagang.jpg"
 const props = withDefaults(defineProps<TeamCardListProps>(),
     {teamList: [] as TeamType})
 
@@ -46,6 +66,40 @@ const doJoinTeam = async (id:number) =>{
     showFailToast("加入失败" + (res.description ? `${res.description}`:''));
   }
 }
+
+/**
+ * 跳转至更新队伍页   保留id
+ * @param id
+ */
+const doUpdateTeam = (id : number) =>{
+  router.push({
+    path:'/team/update',
+    query:{
+      id
+    }
+  })
+}
+const doDeleteTeam = async (id:number) =>{
+  const res = await myAxios.post('/team/delete',{
+     id
+  });
+  if(res?.code === 0){
+    showSuccessToast("解散队伍");
+  }else {
+    showFailToast("解散队伍失败" + (res.description ? `${res.description}`:''));
+  }
+}
+const doQuitTeam = async (id:number) =>{
+  const res = await myAxios.post('/team/quit',{
+    teamId:id
+  });
+  if(res?.code === 0){
+    showSuccessToast("退出队伍");
+  }else {
+    showFailToast("退出队伍失败" + (res.description ? `${res.description}`:''));
+  }
+}
+
 </script>
 
 
