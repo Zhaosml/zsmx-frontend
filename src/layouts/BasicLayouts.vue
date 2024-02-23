@@ -19,8 +19,8 @@
 <!--标签栏组件-->
 
   <van-tabbar route @change="onChange">
-    <van-tabbar-item replace to="/" icon="index">主页</van-tabbar-item>
-    <van-tabbar-item replace to="/team" icon="team">队伍</van-tabbar-item>
+    <van-tabbar-item replace to="/" icon="home-o">主页</van-tabbar-item>
+    <van-tabbar-item replace to="/team" icon="friends-o">队伍</van-tabbar-item>
     <van-tabbar-item replace to="/user" icon="user">个人</van-tabbar-item>
   </van-tabbar>
 

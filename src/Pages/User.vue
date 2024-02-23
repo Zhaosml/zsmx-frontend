@@ -19,11 +19,11 @@ const user = ref();
 
 onMounted(async () =>{
   user.value =  await getCurrentUser();
-  // if(!user.value){
-  //   router.push({
-  //     path: '/user/login'
-  //   })
-  // }
+  if(!user.value){
+    router.push({
+      path: '/user/login'
+    })
+  }
 })
 
 

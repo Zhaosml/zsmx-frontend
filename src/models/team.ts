@@ -11,5 +11,8 @@ export type TeamType ={
     //  todo 定义枚举值
     "status":string,
     "createUser":string,
-    "userId":number
+    "createTime":Date,
+    "userId":number,
+    "hasJoinNum":number,
+    "hasJoin":string
 }

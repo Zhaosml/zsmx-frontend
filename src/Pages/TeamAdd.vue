@@ -68,7 +68,7 @@
     </div>
   </van-form>
   </div>
-  {{ addTeamData }}
+<!--  {{ addTeamData }}-->
 </template>
 
 <script setup lang="ts">
@@ -90,12 +90,17 @@ const initFormData = {
 // 需要用户填写的表单数据
 const addTeamData = ref({...initFormData})
 
+// 时间组件显示
 const showPicker = ref(false);
-const minDate = new Date()
+const minDate = new Date();
+minDate.setDate(minDate.getDate() + 1);
+
 const onConfirm = ({selectedValues}) => {
   addTeamData.value = {...addTeamData.value, expireTime: selectedValues.join('-')}
   showPicker.value = false;
 };
+
+
  //TODO 前端参数校验
 const onSubmit = async () =>{
   const postData = {

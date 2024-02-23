@@ -23,6 +23,9 @@ myAxios.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 myAxios.interceptors.response.use(function (response) {
+    if(response?.data?.code == 40100){
+        window.location.href = '/user/login';
+    }
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
     console.log("我收到你的响应了",response)
