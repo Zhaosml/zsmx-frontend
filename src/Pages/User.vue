@@ -1,21 +1,106 @@
 <template>
   <template v-if="user">
-    <van-cell title="昵称" :value="user?.username"/>
-    <van-cell title="头像"  >
-      <img style="height:48px" :src="user.avatarUrl">
+
+    <!--      <van-cell title="头像" is-link  to="/user/edit" >-->
+    <!--        <img style="height:48px" :src="user.avatarUrl">-->
+    <!--      </van-cell>-->
+
+    <div>
+      <van-row justify="center">
+        <van-image
+            round
+            width="10rem"
+            height="10rem"
+            :src="user.avatarUrl"
+        />
+      </van-row>
+    </div>
+
+    <!-- 标签 -->
+    <van-cell icon="label-o" is-link  to="/user/edit" :value="user.tags"
+              @click="toEdit('tags','标签',user.tags)">
+      <template #title>
+        <span class="custom-title">我的标签</span>
+      </template>
+      <van-tag plain type="primary" v-for="tag in user.tags" style="margin-left: 8px; margin-top: 8px"  >
+        {{tag}}
+      </van-tag>
+    </van-cell>
+
+
+
+    <van-cell icon="user-circle-o"  is-link to="/user/edit" :value="user.username"
+              @click="toEdit('username','昵称',user.username)">
+      <template #title>
+        <span class="custom-title">昵称</span>
+      </template>
+    </van-cell>
+    <van-cell icon="contact-o" title="账号" :value="user.userAccount">
+      <template #right-icon>
+        <van-icon class="search-icon" />
+      </template>
+    </van-cell>
+
+    <van-cell icon="like-o" is-link
+              :value="user.gender"
+              @click="toEdit('gender','性别',user.gender)">
+      <template #title>
+        <span class="custom-title">性别</span>
+      </template>
+      <template v-if="user.gender === 0">
+        女
+      </template>
+      <template v-else>
+        男
+      </template>
+    </van-cell>
+
+    <van-cell icon="phone-o"  is-link to="/user/edit" :value="user.phone" @click="toEdit('phone','电话',user.phone)">
+      <template #title>
+        <span class="custom-title">电话</span>
+      </template>
+    </van-cell>
+    <van-cell icon="envelop-o" is-link to="/user/edit" :value="user.email" @click="toEdit('email','邮箱',user.email)">
+      <template #title>
+        <span class="custom-title">邮箱</span>
+      </template>
+    </van-cell>
+    <van-cell icon="underway-o" :value="user.createTime">
+      <template #title>
+        <span class="custom-title">注册时间</span>
+      </template>
     </van-cell>
   </template>
   <van-cell title="修改信息" is-link to="/user/team/update" />
   <van-cell title="我创建的队伍" is-link to="/user/team/create" />
   <van-cell title="我加入的队伍" is-link to="/user/team/join" />
+  <div style="margin: 16px;">
+    <van-button  round block type="danger" native-type="submit" @click="logOut" >
+      退出登录
+    </van-button>
+  </div>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import {getCurrentUser} from "../service/user.ts";
+import myAxios from "../plugins/myAxios.ts";
+import {showFailToast, showSuccessToast} from "vant";
 const router = useRouter();
 const user = ref();
+/**
+ * 退出登录
+ */
+const logOut = async () => {
+   const res = await myAxios.post('/user/logout')
+   if(res.data === 1){
+    showSuccessToast('退出登录');
+     router.push({
+       path: '/user/login'
+     })
+   }
+}
 
 onMounted(async () =>{
   user.value =  await getCurrentUser();
@@ -24,6 +109,8 @@ onMounted(async () =>{
       path: '/user/login'
     })
   }
+  // todo 扩展内容之标签显示
+  user.value.tags = JSON.parse(user.value.tags)
 })
 
 
@@ -37,6 +124,18 @@ const toEdit = (editKey:string,editName:string,currentValue:string) => {
     },
   })
 }
+
+const toTags = (editKey:string,editName:string,currentValue:string) => {
+  router.push({
+    path:'/user/tags',
+    query:{
+      editKey,
+      editName,
+      currentValue,
+    },
+  })
+}
+
 
 </script>
 

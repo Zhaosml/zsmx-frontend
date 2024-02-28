@@ -33,7 +33,7 @@ const route = useRoute();
 const editUser = ref({
   editKey:route.query.editKey,
   editName:route.query.editName,
-  currentValue:route.query.currentValue,
+  currentValue:route.query.currentVa
 })
 
 // const currentUser =  getCurrentUser();
@@ -49,7 +49,7 @@ const onSubmit = async () => {
 
   const res = await myAxios.post('/user/update',{
     'id':currentUser.id,
-    [editUser.value.editKey as string]:editUser.value.currentValue,
+    [editUser.value.editKey]:editUser.value.currentValue,
   })
   if(res.code === 0 && res.data > 0){
     showSuccessToast('修改成功');

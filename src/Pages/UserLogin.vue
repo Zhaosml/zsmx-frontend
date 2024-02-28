@@ -16,12 +16,17 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
       />
+      <div style="margin: 16px;">
+        <van-button round block type="primary" native-type="submit">
+          提交
+        </van-button>
+      </div>
+      <van-row  justify="end">
+        <van-col span="8" >
+          <van-cell class="loginUnderline" to="/user/register" value="还没有账号，点击注册" />
+        </van-col>
+      </van-row>
     </van-cell-group>
-    <div style="margin: 16px;">
-      <van-button round block type="primary" native-type="submit">
-        提交
-      </van-button>
-    </div>
   </van-form>
 
 </template>
@@ -54,5 +59,5 @@ const onSubmit = async () => {
 
 
 <style scoped>
-
+@import "../css/loginUnderline.css";
 </style>

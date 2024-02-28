@@ -1,15 +1,57 @@
 <template>
   <template v-if="user">
-    <van-cell title="昵称" is-link to="/user/edit" :value="user.username" @click="toEdit('username','昵称',user.username)"/>
-    <van-cell title="账号" :value="user.userAccount" />
-    <van-cell title="头像" is-link  to="/user/edit" >
-      <img style="height:48px" :src="user.avatarUrl">
+
+<!--      <van-cell title="头像" is-link  to="/user/edit" >-->
+<!--        <img style="height:48px" :src="user.avatarUrl">-->
+<!--      </van-cell>-->
+
+    <div>
+      <van-row justify="center">
+        <van-image
+            round
+            width="10rem"
+            height="10rem"
+            :src="user.avatarUrl"
+        />
+      </van-row>
+    </div>
+
+    <van-cell icon="user-circle-o"  title="昵称" is-link to="/user/edit"
+              :value="user.username" @click="toEdit('username','昵称',user.username)">
+      <template #right-icon>
+        <van-icon class="search-icon" />
+      </template>
     </van-cell>
-    <van-cell title="性别" is-link      :value="user.gender" @click="toEdit('gender','性别',user.gender)"/>
-    <van-cell title="电话" is-link      to="/user/edit" :value="user.phone" @click="toEdit('phone','电话',user.phone)"/>
-    <van-cell title="邮箱" is-link      to="/user/edit" :value="user.email" @click="toEdit('email','邮箱',user.email)"/>
-    <van-cell title="星球编号"   to="/user/edit" :value="user.planetCode" />
-    <van-cell title="注册时间"   to="/user/edit" :value="user.createTime" />
+    <van-cell icon="contact-o" title="账号" :value="user.userAccount">
+      <template #right-icon>
+        <van-icon class="search-icon" />
+      </template>
+    </van-cell>
+
+    <van-cell icon="like-o" title="性别" is-link
+              :value="user.gender"
+              @click="toEdit('gender','性别',user.gender)">
+      <template #right-icon>
+        <van-icon class="search-icon" />
+      </template>
+      <template v-if="user.gender === 0">
+        女
+      </template>
+      <template v-else>
+        男
+      </template>
+      </van-cell>
+    <van-cell icon="phone-o" title="电话" is-link to="/user/edit" :value="user.phone" @click="toEdit('phone','电话',user.phone)">
+      <template #right-icon>
+        <van-icon class="search-icon" />
+      </template>
+    </van-cell>
+    <van-cell icon="envelop-o" title="邮箱" is-link to="/user/edit" :value="user.email" @click="toEdit('email','邮箱',user.email)">
+      <template #right-icon>
+        <van-icon class="search-icon" />
+      </template>
+    </van-cell>
+    <van-cell title="注册时间"  :value="user.createTime" />
   </template>
 
 </template>
@@ -51,5 +93,8 @@ const toEdit = (editKey:string,editName:string,currentValue:string) => {
 
 
 <style scoped>
-
+.search-icon {
+  font-size: 16px;
+  line-height: inherit;
+}
 </style>

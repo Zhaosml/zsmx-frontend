@@ -140,7 +140,6 @@ const formatDate = (dateTimeString) => {
   return dateTime.toLocaleString(); // Adjust the format as needed
 }
 
-const columnsType = ['hour', 'minute', 'second'];
 
 </script>
 

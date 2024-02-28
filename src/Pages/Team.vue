@@ -8,7 +8,7 @@
     <div style="margin-bottom: 10px"></div>
     <van-button class="add-button"  type="primary"@click="doJoinTeam" icon="plus"></van-button>
     <team-card-list :team-list="teamList"></team-card-list>
-    <van-empty v-if="teamList.length < 1"  description="数据为空" >
+    <van-empty v-if="teamList.length < 1"  description="暂无新队伍" >
     </van-empty>
   </div>
 </template>
@@ -55,11 +55,15 @@ const listTeam = async (val='',status = 0) => {
       status
     }
   })
-  if(res?.code === 0){
+  if(res?.code === 0 ){
     teamList.value = res.data
   }
+  if(res.data === null){
+    teamList.value = []
+    console.log('队伍为空')
+  }
   else {
-    showFailToast('请求失败');
+    // showFailToast('请求失败');
   }
 }
 

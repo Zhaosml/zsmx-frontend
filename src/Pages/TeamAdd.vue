@@ -107,7 +107,7 @@ const onSubmit = async () =>{
     ...addTeamData.value,
     status: Number(addTeamData.value.status)
   }
-  const res = await myAxios.post("team/add",postData);
+  const res = await myAxios.post("/team/add",postData);
   if(res?.code === 0 && res.data){
     showSuccessToast('请求成功');
     router.push({
