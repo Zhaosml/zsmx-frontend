@@ -6,8 +6,8 @@
 
   <van-form @submit="onSubmit">
     <div style="margin: 16px;">
-      <van-button round block type="primary" native-type="submit">
-        提交
+      <van-button round block type="primary" native-type="submit" :disabled="loading">
+        {{ loading ? '上传中...' : '提交' }}
       </van-button>
     </div>
   </van-form>
@@ -25,6 +25,7 @@ import myAxios from "../plugins/myAxios.ts";
 import {useRouter} from "vue-router";
 const router = useRouter();
 const user = ref();
+const loading = ref(false); // 添加加载状态
 
 onMounted(async () =>{
   user.value =  await getCurrentUser();
@@ -33,6 +34,7 @@ onMounted(async () =>{
 
 
 const afterRead = async (file) => {
+  loading.value = true; // 显示加载状态
   const formData = new FormData();
   formData.append("file", file.file, file.file.name);
   formData.append("Content-Length", file.file.size);
@@ -43,6 +45,7 @@ const afterRead = async (file) => {
   } else {
     showFailToast("上传失败")
   }
+  loading.value = false; // 隐藏加载状态
   // 此时可以自行将文件上传至服务器
   console.log(user.value.avatarUrl);
 };
