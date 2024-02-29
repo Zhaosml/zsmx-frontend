@@ -31,8 +31,7 @@ onMounted(async () =>{
   user.value =  await getCurrentUser();
 })
 
-
-
+// 上传头像到腾讯cos  并且保存头像到当前页面
 const afterRead = async (file) => {
   loading.value = true; // 显示加载状态
   const formData = new FormData();
@@ -67,7 +66,10 @@ const isOverSize = (file) => {
 };
 
 const onSubmit = async () =>{
-
+  if(loading.value == false){
+    showFailToast('还未上传头像');
+    return;
+  }
   const res = await myAxios.post('user/update',{
     id:user.value.id,
     avatarUrl:user.value.avatarUrl
