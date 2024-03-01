@@ -1,6 +1,6 @@
 <template v-if="user">
 
-  <van-uploader  v-model="fileList"  multiple :before-read="beforeRead" :after-read="afterRead" :max-size="isOverSize">
+  <van-uploader   multiple :before-read="beforeRead" :after-read="afterRead" :max-size="isOverSize">
     <van-button icon="plus" type="primary">上传文件</van-button>
   </van-uploader>
 
@@ -27,6 +27,7 @@ const router = useRouter();
 const user = ref();
 const loading = ref(false); // 添加加载状态
 
+// 加载当前用户的信息
 onMounted(async () =>{
   user.value =  await getCurrentUser();
 })
@@ -58,13 +59,14 @@ const beforeRead = (file) => {
     return false;
   }
   return true;
-
 };
+
+// 文件大小
 const isOverSize = (file) => {
   const maxSize = file.type === 'image/jpeg' ? 500 * 1024 : 1000 * 1024;
   return file.size >= maxSize;
 };
-
+// 修改头像
 const onSubmit = async () =>{
   if(loading.value == false){
     showFailToast('还未上传头像');

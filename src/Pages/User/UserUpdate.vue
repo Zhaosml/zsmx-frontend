@@ -92,19 +92,8 @@ const afterRead = async (file) => {
 
 onMounted(async () =>{
   user.value =  await getCurrentUser();
-  // const res = await getCurrentUser();
-  // if(res.data){
-  //   user.value = res.data;
-  //   showSuccessToast('获取用户信息成功');
-  // }
-  // else {
-  //   showFailToast('获取用户信息失败');
-  // }
   user.value.tags = JSON.parse(user.value.tags)
-
 })
-
-
 
 const router = useRouter();
 // const route = useRoute();
