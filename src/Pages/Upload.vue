@@ -42,10 +42,11 @@ const afterRead = async (file) => {
   if (res.code === 0) {
     user.value.avatarUrl = res.data
     showSuccessToast("上传成功")
+    loading.value = false; // 隐藏加载状态
   } else {
     showFailToast("上传失败")
+    loading.value = false; // 隐藏加载状态
   }
-  loading.value = false; // 隐藏加载状态
   // 此时可以自行将文件上传至服务器
   console.log(user.value.avatarUrl);
 };
@@ -68,10 +69,10 @@ const isOverSize = (file) => {
 };
 // 修改头像
 const onSubmit = async () =>{
-  if(loading.value == false){
-    showFailToast('还未上传头像');
-    return;
-  }
+  // if(loading.value == false){
+  //   showFailToast('还未上传头像');
+  //   return;
+  // }
   const res = await myAxios.post('user/update',{
     id:user.value.id,
     avatarUrl:user.value.avatarUrl

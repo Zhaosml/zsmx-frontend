@@ -5,7 +5,6 @@
     </template>
   </van-cell>
   <user-card-list :user-list="userList" :loading="loading"/>
-
   <van-empty v-if="!userList || userList.length < 1"  description="数据为空" >
   </van-empty>
 </template>
@@ -15,11 +14,12 @@
 import {useRoute} from "vue-router";
 import {ref, watchEffect} from "vue";
 import qs from 'qs';
-import myAxios from '../plugins/myAxios.ts';
+import myAxios from '../../plugins/myAxios.ts';
 import {showFailToast, showSuccessToast} from "vant";
-import UserCardList from "../components/UserCardList.vue";
+import UserCardList from "../../components/UserCardList.vue";
 
 const route = useRoute();
+const {tags} = route.query;
 
 
 const isMatchModel = ref<boolean>(false)
@@ -68,7 +68,7 @@ const loadData = async () => {
         console.log('/user/recommend error',error)
         showFailToast('请求失败');
       })
-      console.log(userListData);
+      // console.log(userListData);
       if(userListData){
         userListData.forEach(user=>{
           if(user.tags){
@@ -86,7 +86,7 @@ watchEffect(() => {
 })
 
 
-const {tags} = route.query;
+
 
 
 

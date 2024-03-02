@@ -1,21 +1,25 @@
 <template>
   <template v-if="user">
-
     <van-row gutter="10">
-      <van-col span="6" style="margin-left: 25px; padding: 10px 0px">
-          <van-image offset
-                     round
-                     width="6rem"
-                     height="6rem"
-                     :src="user.avatarUrl"
-          />
+      <van-col span="6" style="margin: 0px 10px 0px 20px; padding: 10px 0px">
+        <img :src="user.avatarUrl" class="userImage">
+<!--          <van-image offset-->
+<!--                     round-->
+<!--                     width="6rem"-->
+<!--                     height="6rem"-->
+<!--                     :src="user.avatarUrl"  class="avatar-image"-->
+<!--          />-->
       </van-col>
       <van-col span="12" style="padding: 20px 0px">
         <van-row style="padding-bottom: 10px">{{user.username}}</van-row>
-        <van-row style="font-size: 14px; color: #888888" >{{user.profile}}</van-row>
+        <van-row style="font-size: 14px; color: #888888" >简介：{{user.profile}}</van-row>
+        <van-row>
+
+        </van-row>
       </van-col>
 
     </van-row>
+
     <van-cell icon="label-o" :value="user.tags"
             >
       <template #title>
@@ -118,3 +122,7 @@ const toTags = (editKey:string,editName:string,currentValue:string) => {
 
 </script>
 
+<style>
+@import '../../css/image.css';
+
+</style>
