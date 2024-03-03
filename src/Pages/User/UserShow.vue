@@ -154,9 +154,9 @@ onMounted(async () => {
   const userId = Number(route.query.id);
   const res = await myAxios.get(`/user/${userId}`);
   user.value = res.data
-  // loginUser.value.user = currentUser
-  // loginUser.value.userIds = JSON.parse(currentUser.userIds)
-  // console.log(user.value.avatarUrl)
+  const currentUser = await getCurrent()
+  loginUser.value.user = currentUser
+  loginUser.value.userIds = JSON.parse(currentUser.userIds)
 
 })
 
