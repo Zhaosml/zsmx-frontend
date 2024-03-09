@@ -56,6 +56,12 @@
         <span class="custom-title">邮箱</span>
       </template>
     </van-cell>
+    <van-cell icon="description-o" is-link to="/user/edit" :value="user.profile" @click="toEdit('profile','个人简介',user.profile)">
+      <template #title>
+        <span class="custom-title">个人简介</span>
+      </template>
+    </van-cell>
+
     <van-cell icon="underway-o" :value="user.createTime">
       <template #title>
         <span class="custom-title">注册时间</span>
