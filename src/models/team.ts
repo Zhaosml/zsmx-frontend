@@ -1,3 +1,6 @@
+import {UserType} from "./user";
+
+
 /**
  * 队伍属性
  */
@@ -14,5 +17,21 @@ export type TeamType ={
     "createTime":Date,
     "userId":number,
     "hasJoinNum":number,
-    "hasJoin":string
+    "hasJoin":string,
+    "coverImage":string
+}
+
+export type TeamListType = {
+    "id": number,
+    "teamName": string,
+    "teamAvatarUrl"?: string,
+    "teamPassword"?: string,
+    "teamDesc": string,
+    "maxNum": number,
+    "expireTime": Date,
+    "teamStatus": number,
+    "createTime": Date,
+    "announce"?: string,
+    "user"?: UserType,
+    "userSet"?: UserType[]
 }

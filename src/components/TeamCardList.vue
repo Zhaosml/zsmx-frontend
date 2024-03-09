@@ -1,10 +1,14 @@
 <template>
   <div id="teamCardList">
     <van-card v-for="team in props.teamList"
-              thumb="public/靓仔一起打篮球吗.jpeg"
+              :thumb="team.coverImage ?? defaultImage"
               :title="`${team.name}`"
               :desc="'描述：'+team.description"
+              @click-thumb="getTeamDetail(team.id)"
     >
+      <template #title>
+        <div class="team-title" @click="getTeamDetail(team.id)">{{ team.name }}</div>
+      </template>
       <template #tags>
         <van-tag plain type="danger" style=" margin-top: 8px"  >
           {{teamStatusEum[team.status]}}
@@ -28,6 +32,9 @@
         <van-button v-if="team.hasJoin" size="small" plain
                     @click="doQuitTeam(team.id)"  >退出队伍
         </van-button>
+        <van-button v-if="team.hasJoin" size="small" plain
+                    @click="getTeamDetail(team.id)"  >队伍详情
+        </van-button>
         <!--创建人不可见，仅已加入队伍的人可见-->
         <van-button v-if="team.userId == currentUser?.id" size="small" plain type="danger"
                     @click="doDeleteTeam(team.id)"  >解散队伍
@@ -47,6 +54,7 @@ import {showFailToast, showSuccessToast} from "vant";
 import {onMounted, ref} from "vue";
 import {getCurrentUser} from "../service/user.ts";
 import {useRouter} from "vue-router";
+import defaultImage from "../../public/defalutTeamImg.jpg";
 
 const router = useRouter();
 const currentUser = ref();
@@ -71,6 +79,15 @@ const doJionCancel = () =>{
   password.value = ''
 }
 
+const getTeamDetail = (id) => {
+  router.push({
+    path: "/team/detail",
+    query: {
+      id,
+    },
+  });
+};
+
 //加入队伍
 const doJoinTeam = async () =>{
   if(!JoinTeamId.value){
@@ -82,11 +99,13 @@ const doJoinTeam = async () =>{
   });
   if(res?.code === 0){
     showSuccessToast("加入成功");
+    window.location.reload();
   }else {
     showFailToast("加入失败" + (res.description ? `${res.description}`:''));
     JoinTeamId.value = 0,
     password.value = ''
   }
+
 }
 
 const preJoinTeam = (team : TeamType) => {
@@ -129,6 +148,7 @@ const doQuitTeam = async (id:number) =>{
   });
   if(res?.code === 0){
     showSuccessToast("退出队伍");
+    window.location.reload();
   }else {
     showFailToast("退出队伍失败" + (res.description ? `${res.description}`:''));
   }

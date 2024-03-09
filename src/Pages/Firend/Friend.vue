@@ -5,7 +5,20 @@
       <van-button plain hairline size="small" style="width: 60px" @click="search" type="primary">搜索</van-button>
     </div>
     <div class="friend-group">
+      <van-row>
+        <van-cell  is-link to="/apply" size="large">
+          <template #title>
+            好友申请
+            <van-badge class="badge" v-if="applyFriendsCount > 0" :content="applyFriendsCount"  >
+            </van-badge>
+          </template>
+          <template #icon>
+            <van-icon name="bulb-o" style="color: #0077ff; margin-top: 1px;font-size: 20px"></van-icon>
+          </template>
+        </van-cell>
+      </van-row>
       <div class="group-title">我的好友</div>
+
       <ul class="friend-items">
         <van-empty v-if="status.friends.length<=0" description="暂无好友"/>
         <li v-else v-for="friend in status.friends" :key="friend.id"
@@ -15,11 +28,11 @@
             @mouseup="resetColor($event)"
             @touchend="resetColor($event)">
           <div class="avatar-container">
-            <img
-                 :src="friend.avatarUrl" class="avatar">
+            <img @click="toUserShow(friend.id)"
+                 :src="friend.avatarUrl ?? defaultImage" class="avatar">
           </div>
 
-          <div class="friend-info">
+          <div class="friend-info" >
 <!--todo 不需要直接跳转用户详情-->
             <div @click="toUserShow(friend.id)" class="friend-name">
               {{ friend.username.slice(0, 14) }}
@@ -35,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-
+import defaultImage from "../../../public/defalutTeamImg.jpg";
 import {onMounted, ref} from "vue";
 // import {defaultPicture} from "../common/userCommon";
 import {useRouter} from "vue-router";
@@ -50,17 +63,17 @@ const status = ref({
 })
 
 
-// const toUserShow = (id:number) => {
-//   router.push({
-//     path: '/userShow',
-//     query: {
-//       id
-//     }
-//   })
-// }
-/**
- * 搜索好友
- */
+const toUserShow = (id:number) => {
+  router.push({
+    path: '/userShow',
+    query: {
+      id
+    }
+  })
+}
+// /**
+//  * 搜索好友
+//  */
 const search = async () => {
   const res = await myAxios.post("/user/searchFriend", {
     searchText: status.value.searchText
@@ -72,13 +85,18 @@ const search = async () => {
 /**
  * 加载好友列表
  */
+const applyFriendsCount = ref()
+
 onMounted(async () => {
+   const count = await myAxios.get("/friends/getRecordCount")
+   applyFriendsCount.value = count.data
+
   status.value.loginUser = await getCurrentUser();
   const res = await myAxios.get("/user/friends")
   if(res.code === 0){
     status.value.friends = res.data
   }
-console.log(res.data)
+// console.log(res.data)
 })
 
 /**
@@ -157,9 +175,9 @@ const resetColor = (event) => {
 
 .avatar-container {
   width: 40px;
-  height: 40px;
+  height:40px;
   min-width: 40px !important;
-  border-radius: 50%;
+
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -168,9 +186,12 @@ const resetColor = (event) => {
 }
 
 .avatar {
+  min-width: 40px !important;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  border-radius: 50%;
+
 }
 
 .friend-info {
@@ -186,6 +207,14 @@ const resetColor = (event) => {
   font-size: 16px;
   font-weight: bold;
   align-items: center;
+}
+
+.van-icon  {
+  color: #0084ff;
+}
+.badge {
+  float: right;
+  position: absolute; top: 10px; right: 10px;
 }
 
 </style>

@@ -1,4 +1,5 @@
 <template>
+  <van-search v-model="userList.username" placeholder="请输入用户名称搜索"  @search="onSearch"/>
   <van-cell center title="心动模式">
     <template #right-icon>
       <van-switch v-model="isMatchModel" />
@@ -20,6 +21,29 @@ import UserCardList from "../../components/UserCardList.vue";
 
 const route = useRoute();
 const {tags} = route.query;
+
+const onSearch = (val) => {
+  listUser(val)
+};
+
+const listUser = async (val='') => {
+  const res = await myAxios.get("/user/search",{
+    params:{
+      username: userList.value.username,
+      pageNum:1,
+    }
+  })
+  if(res?.code === 0 ){
+    userList.value = res.data
+  }
+  if(res.data === null){
+    userList.value = []
+    console.log('队伍为空')
+  }
+  else {
+    // showFailToast('请求失败');
+  }
+}
 
 
 const isMatchModel = ref<boolean>(false)

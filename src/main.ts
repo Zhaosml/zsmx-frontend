@@ -3,7 +3,6 @@ import App from './App.vue'
 import * as VueRouter from 'vue-router';
 import routes from "./config/route.ts";
 import teamCss from "./css/team.css";
-
 import Vant from 'vant';
 import 'vant/lib/index.css';
 
@@ -19,6 +18,20 @@ const router = VueRouter.createRouter({
     history: VueRouter.createWebHistory(),
     routes, // `routes: routes` 的缩写
 })
+// router.beforeEach((to,from,next)=>{
+//     if (to.path==='/user/login') return next()
+//     let token = window.sessionStorage.getItem('token');
+//     if (!token){
+//         showFailToast('登录状态失效,请重新登录')
+//         return next('/user/login')
+//     }
+//     next()
+// })
+// router.beforeEach((to, from, next) => {
+//     to.meta.lastRoutePath = from.path;
+//     next();
+// });
+
 app.use(router);
 
 

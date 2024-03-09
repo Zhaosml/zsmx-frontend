@@ -11,11 +11,9 @@
       </van-row>
     </div>
     <van-cell icon="user-circle-o" title="头像" is-link to="/upload">
-
     </van-cell>
 
-    <van-cell icon="label-o" is-link  to="/user/edit" :value="user.tags"
-              @click="toEdit('tags','标签',user.tags)">
+    <van-cell icon="label-o" is-link  to="/user/tags" :value="user.tags">
       <template #title>
         <span class="custom-title">我的标签</span>
       </template>
@@ -23,6 +21,7 @@
         {{tag}}
       </van-tag>
     </van-cell>
+
     <van-cell icon="user-circle-o"  is-link to="/user/edit" :value="user.username"
               @click="toEdit('username','昵称',user.username)">
       <template #title>

@@ -1,7 +1,7 @@
 <template >
   <div class="center">
     <!--todo 展示默认头像-->
-    <img class="img" :src="user.avatarUrl">
+    <img class="img" :src="user.avatarUrl ?? defaultImage">
   </div>
   <div style="padding-top: 15px"/>
 
@@ -34,11 +34,11 @@
   </van-cell>
   <van-popup v-model:show="show" :style="{ padding: '64px' }">{{ user.email }}</van-popup>
 
-  <van-cell value="点击查看" icon="cluster-o" @click="teams" is-link>
-    <template #title>
-      <span class="custom-title">已加队伍</span>
-    </template>
-  </van-cell>
+<!--  <van-cell value="点击查看" icon="cluster-o" @click="teams" is-link>-->
+<!--    <template #title>-->
+<!--      <span class="custom-title">已加队伍</span>-->
+<!--    </template>-->
+<!--  </van-cell>-->
   <van-cell title="简介" icon="chat-o">
     <template #value>
       <div v-if="user.profile" class="van-multi-ellipsis--l3">
@@ -49,29 +49,39 @@
       </div>
     </template>
   </van-cell>
+
   <van-space style="margin: 13px" direction="vertical" fill>
-    <div v-if="!loginUser.userIds.includes(user?.id)">
-      <van-button type="primary" @click="addUser" block>
-        添加好友
-      </van-button>
+     <div v-if="!Friend && !loginUser.user" >
+        <van-button  type="primary" @click="addUser" block>
+      添加好友
+        </van-button>
     </div>
-    <div v-else>
+
+    <div v-if="Friend" >
       <van-button type="primary" @click="chatUser" block>联系好友</van-button>
       <div style="padding-top: 10px;"></div>
       <van-button type="danger" @click="deleteFriend" block>删除好友</van-button>
     </div>
   </van-space>
-  <template>
-    <van-row>
-=      {{user.username}}
-    </van-row>
-  </template>
-
+  <van-dialog v-model:show="addUserApply"
+              :title="'添加好友：'+user.username"
+               show-cancel-button
+               @confirm="toAddUserApply(user.id)">
+    <div style="padding-top:8px"></div>
+    <van-field v-model="addUserApplyText"
+               type="text"
+               placeholder="我是...."
+               style="text-align: center;width: 150px;margin-left: 75px;"
+    />
+    <div style="padding-top:8px "></div>
+  </van-dialog>
 
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import defaultImage from "../../../public/defalutTeamImg.jpg";
+
+import {onMounted, ref, watchEffect} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {showConfirmDialog, showFailToast, showSuccessToast} from "vant";
 import myAxios from "../../plugins/myAxios.ts";
@@ -85,12 +95,31 @@ const showPopup = () => {
 
 const route = useRoute()
 const router = useRouter()
+const applyStatus = ref(true)
+const Friend = ref(true);
 
 
 const loginUser = ref({
   user: {},
   userIds: []
 })
+
+onMounted(async () => {
+
+  const userId = Number(route.query.id);
+  const res = await myAxios.get(`/user/${userId}`);
+  user.value = res.data
+
+  const currentUser = await getCurrentUser()
+  loginUser.value.user = currentUser
+  loginUser.value.userIds = JSON.parse(currentUser.userIds)
+
+  const res_ = await myAxios.get(`/user/isFriend/${userId}`)
+  if(res_.code === 0){
+    Friend.value = res_.data
+  }
+})
+
 
 const teams = () => {
   router.push({
@@ -111,25 +140,39 @@ const chatUser = () => {
     query: {
       id: user.value.id,
       username: user.value.username,
-      type: 1
+      userType: 1
     }
   })
 }
-
 const addUser = async () => {
-  //  dialog组件
-  showConfirmDialog({
-    message: '请确认是否添加' + user.value.username + '为好友?',
-  }).then(async () => {
-    const add = await myAxios.post(`/user/addUser/${user.value.id}`, {})
-    if (add) {
-      loginUser.value.userIds.push(user.value.id)
-      showSuccessToast("添加成功")
-    }
-  }).catch(() => {
-    showSuccessToast("修改成功")
-  });
+  addUserApply.value = true
 }
+
+const addUserApply = ref(false);
+const addUserApplyText = ref();
+const toAddUserApply = async (id: number) => {
+  const status = await myAxios.post("/friends/add", {
+    "receiveId": id,
+    "remark": addUserApplyText.value
+  })
+  if (status) {
+    showSuccessToast("申请成功")
+  }
+}
+// const addUser = async () => {
+//   //  dialog组件
+//   showConfirmDialog({
+//     message: '请确认是否添加' + user.value.username + '为好友?',
+//   }).then(async () => {
+//     const add = await myAxios.post(`/user/addUser/${user.value.id}`, {})
+//     if (add) {
+//       loginUser.value.userIds.push(user.value.id)
+//       showSuccessToast("添加成功")
+//     }
+//   }).catch(() => {
+//     showSuccessToast("修改成功")
+//   });
+// }
 
 const deleteFriend = async () => {
   showConfirmDialog({
@@ -150,17 +193,11 @@ const toUserShow = ref({
   id:route.query.id
 })
 
-onMounted(async () => {
-  const userId = Number(route.query.id);
-  const res = await myAxios.get(`/user/${userId}`);
-  user.value = res.data
-  const currentUser = await getCurrent()
-  loginUser.value.user = currentUser
-  loginUser.value.userIds = JSON.parse(currentUser.userIds)
 
-})
-
-
+watchEffect(() => {
+  console.log('响应式数据发生变化');
+  // 在这里执行需要执行的副作用操作
+});
 </script>
 
 <style scoped>
