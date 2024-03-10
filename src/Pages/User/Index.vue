@@ -71,7 +71,7 @@ const loadData = async () => {
   let userListData;
   loading.value=true
     if(isMatchModel.value){
-      const num = 10;
+      const num = 100;
       const userListData = await myAxios.get('/user/match',{
         params:{
           num
@@ -99,7 +99,7 @@ const loadData = async () => {
     else {
        userListData = await myAxios.get('/user/recommend',{
         params:{
-          pageSize:8,
+          pageSize:100,
           pageNum:1
         },
       }).then(function (respose){
