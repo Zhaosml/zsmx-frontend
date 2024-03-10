@@ -1,5 +1,13 @@
 <template>
+  <van-notice-bar
+      color="#1989fa"
+      background="#ecf9ff"
+      left-icon="volume-o"
+      style="margin-bottom: 10px"
+      text="富强、民主、文明、和谐；自由、平等、公正、法治；爱国、敬业、诚信、友善。"
+  />
   <van-search v-model="userList.username" placeholder="请输入用户名称搜索"  @search="onSearch"/>
+
   <van-cell center title="心动模式">
     <template #right-icon>
       <van-switch v-model="isMatchModel" />
@@ -20,30 +28,39 @@ import {showFailToast, showSuccessToast} from "vant";
 import UserCardList from "../../components/UserCardList.vue";
 
 const route = useRoute();
-const {tags} = route.query;
+//const {tags} = route.query;
 
-const onSearch = (val) => {
-  listUser(val)
-};
 
 const listUser = async (val='') => {
   const res = await myAxios.get("/user/search",{
     params:{
       username: userList.value.username,
+      profile:userList.value.profile,
       pageNum:1,
     }
   })
-  if(res?.code === 0 ){
-    userList.value = res.data
+  if(res.data){
+    res.data.forEach(user=>{
+      if(user.tags){
+        user.tags = JSON.parse(user.tags);
+      }
+    })
+    userList.value = res.data;
   }
-  if(res.data === null){
-    userList.value = []
-    console.log('队伍为空')
-  }
-  else {
-    // showFailToast('请求失败');
-  }
+  //if(res?.code === 0 ){
+  //  userList.value = res.data
+  //  console.log("userList"+userList.value)
+  //  console.log("res"+res.data)
+  //  userList.value.tags = JSON.parse(userList.value.tags)
+  //   console.log("标签"+userList.value.tags)
+  //}
+
 }
+const onSearch = (val) => {
+  listUser(val)
+};
+
+
 
 
 const isMatchModel = ref<boolean>(false)
@@ -78,6 +95,7 @@ const loadData = async () => {
         userList.value = userListData;
       }
     }
+
     else {
        userListData = await myAxios.get('/user/recommend',{
         params:{
