@@ -5,10 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import myAxios from "../plugins/myAxios.ts";
+import myAxios from "../../plugins/myAxios.ts";
 import {useRouter} from "vue-router";
-import TeamCardList from "../components/TeamCardList.vue";
-import {onMounted, ref} from "vue";
+import TeamCardList from "../../components/TeamCardList.vue";
+import {onMounted, ref, watchEffect} from "vue";
 import {showFailToast, showToast} from "vant";
 
 const router = useRouter()
@@ -45,6 +45,10 @@ const searchText = ref('')
 const onSearch = (val) => {
   listTeam(val)
 };
+
+watchEffect(()=>{
+  listTeam()
+})
 
 
 </script>

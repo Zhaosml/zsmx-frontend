@@ -1,4 +1,4 @@
-<template >
+<template v-if="user">
   <div class="center">
     <!--todo 展示默认头像-->
     <img class="img" :src="user.avatarUrl ?? defaultImage">
@@ -49,20 +49,22 @@
       </div>
     </template>
   </van-cell>
-
-  <van-space style="margin: 13px" direction="vertical" fill>
-     <div v-if="!Friend && !loginUser.user" >
+    <div>
+      <div v-if="!Friend" >
         <van-button  type="primary" @click="addUser" block>
-      添加好友
+          添加好友
         </van-button>
+      </div>
+
+      <div v-else>
+        <van-button type="primary" @click="chatUser" block>联系好友</van-button>
+        <div style="padding-top: 10px;"></div>
+        <van-button type="danger" @click="deleteFriend" block>删除好友</van-button>
+      </div>
+
     </div>
 
-    <div v-if="Friend" >
-      <van-button type="primary" @click="chatUser" block>联系好友</van-button>
-      <div style="padding-top: 10px;"></div>
-      <van-button type="danger" @click="deleteFriend" block>删除好友</van-button>
-    </div>
-  </van-space>
+
   <van-dialog v-model:show="addUserApply"
               :title="'添加好友：'+user.username"
                show-cancel-button
@@ -105,7 +107,9 @@ const loginUser = ref({
 })
 
 onMounted(async () => {
+  if(route.query.id == null){
 
+  }
   const userId = Number(route.query.id);
   const res = await myAxios.get(`/user/${userId}`);
   user.value = res.data

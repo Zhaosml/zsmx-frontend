@@ -1,5 +1,5 @@
 <template>
-  <div id="teamUpdatePage">
+  <div id="teamAddPage">
     <van-form @submit="onSubmit">
     <van-cell-group inset>
       <van-field
@@ -71,65 +71,53 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute, useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
-import myAxios from "../plugins/myAxios.ts";
+import {useRouter} from "vue-router";
+import {ref} from "vue";
+import myAxios from "../../plugins/myAxios.ts";
 import {showFailToast, showSuccessToast} from "vant";
 
 const router = useRouter()
-const route = useRoute()
 
-//不写{}写‘’会查询为空
-const addTeamData = ref({})
+const initFormData = {
+  "name": "",
+  "description": "",
+  "expireTime": "",
+  "maxNum": 3,
+  "password": "",
+  "status": 0,
+}
+// 需要用户填写的表单数据
+const addTeamData = ref({...initFormData})
 
-const id = route.query.id
+// 时间组件显示
+const showPicker = ref(false);
+const minDate = new Date();
+minDate.setDate(minDate.getDate() + 1);
 
-// 获取之前的队伍的信息
-onMounted(async () =>{
-  if(id <= 0) {
-    showFailToast('加载队伍失败')
-    return;
-  }
-  const res = await myAxios.get("/team/get",{
-    params:{ id }
-  })
-  if(res?.code === 0){
-    addTeamData.value = res.data
-  }
-  else {
-    showFailToast('加载队伍失败，请重新刷新');
-  }
-})
+const onConfirm = ({selectedValues}) => {
+  addTeamData.value = {...addTeamData.value, expireTime: selectedValues.join('-')}
+  showPicker.value = false;
+};
 
-//TODO 前端参数校验
 
-// 提交修改信息
+ //TODO 前端参数校验
 const onSubmit = async () =>{
   const postData = {
     ...addTeamData.value,
     status: Number(addTeamData.value.status)
   }
-  const res = await myAxios.post("team/update",postData);
+  const res = await myAxios.post("/team/add",postData);
   if(res?.code === 0 && res.data){
-    showSuccessToast('更新成功');
+    showSuccessToast('请求成功');
     router.push({
       path:'/team',
       replace:true
     })
   }
   else {
-    showFailToast('更新失败');
+    showFailToast('请求失败');
   }
 }
-
-// 时间选择器
-const showPicker = ref(false);
-const minDate = new Date()
-const onConfirm = ({selectedValues}) => {
-  addTeamData.value = {...addTeamData.value, expireTime: selectedValues.join('-')}
-  showPicker.value = false;
-};
-
 
 </script>
 

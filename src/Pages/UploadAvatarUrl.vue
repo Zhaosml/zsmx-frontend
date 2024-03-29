@@ -11,10 +11,6 @@
       </van-button>
     </div>
   </van-form>
-
-
-
-
 </template>
 
 <script setup lang="ts">
@@ -48,7 +44,7 @@ const afterRead = async (file) => {
     loading.value = false; // 隐藏加载状态
   }
   // 此时可以自行将文件上传至服务器
-  console.log(user.value.avatarUrl);
+  // console.log(user.value.avatarUrl);
 };
 
 

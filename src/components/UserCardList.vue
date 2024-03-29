@@ -1,37 +1,54 @@
 <template>
-  <van-skeleton title avatar :row="3" :loading="props.loading" v-for="user in props.userList">
-  <van-card
-            :desc="user.profile"
-            :title="`${user.username} (${user.planetCode})`"
-            :thumb="user.avatarUrl"
-  >
-    <template #tags>
-      <van-tag plain type="primary" v-for="tag in user.tags" style="margin-left: 8px; margin-top: 8px"  >
-        {{tag}}
-      </van-tag>
-    </template>
+  <van-skeleton title avatar :row="3" :loading="props.loading" v-for="user in userList">
 
-    <template #footer>
-      <van-button size="mini">联系我</van-button>
-    </template>
-  </van-card>
+    <van-card
+        :desc="'简介：'+user.profile"
+        :title="`${user.username} `"
+        @click="toUserShow(user.id)"
+    >
+      <template #thumb >
+          <img width="100%" height="100%" id="images" :src="user.avatarUrl ?? defaultImage" >
+      </template>
+      <template #tags>
+        <div>标签：
+          <van-tag plain type="primary" v-for="tag in user.tags" style="margin-right: 8px; margin-top: 8px">
+            {{ tag }}
+          </van-tag>
+        </div>
+      </template>
+      </van-card>
   </van-skeleton>
 </template>
 
 <script setup lang="ts">
+import defaultImage from "../../public/defalutTeamImg.jpg";
 import {UserType} from "../models/user.ts";
-import {onMounted} from "vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 interface UserCardListProps {
-  loading:boolean;
-  userList : UserType[]
+  loading: boolean;
+  userList: UserType[]
 }
-const props = withDefaults(defineProps<UserCardListProps>(),
-    {userList: []})
+
+const props = withDefaults(defineProps<UserCardListProps>(), {userList: []})
+
+const toUserShow = (id:number) => {
+  router.push({
+    path:'/userShow',
+    query:{
+      id
+    },
+  })
+}
+
 
 </script>
 
 
-<style scoped>
-
+<style scoped lang="css">
+#images {
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.5) !important;
+}
 </style>

@@ -14,13 +14,15 @@
 </template>
 
 <script setup lang="ts">
-import myAxios from "../plugins/myAxios.ts";
+import myAxios from "../../plugins/myAxios.ts";
 import {useRouter} from "vue-router";
-import TeamCardList from "../components/TeamCardList.vue";
-import {onMounted, ref} from "vue";
+import TeamCardList from "../../components/TeamCardList.vue";
+import {onMounted, ref, watch, watchEffect} from "vue";
 import {showFailToast, showToast} from "vant";
 
 const router = useRouter()
+
+
 //切换栏
 const onTabChange = (name) =>{
   //查公开
@@ -43,11 +45,9 @@ const doJoinTeam = () =>{
 //查询队伍列表
 const teamList = ref([]);
 
-onMounted( () => {
-  listTeam();
-})
+
 //搜索全部队伍
-const listTeam = async (val='',status = 0) => {
+ const listTeam = async (val='',status = 0) => {
   const res = await myAxios.get("/team/list",{
     params:{
       searchText: val,
@@ -74,7 +74,11 @@ const onSearch = (val) => {
 };
 
 
-
+watchEffect(() => {
+  listTeam()
+  console.log('响应式数据发生变化');
+  // 在这里执行需要执行的副作用操作
+});
 
 </script>
 

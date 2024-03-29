@@ -21,7 +21,7 @@
 <script setup lang="ts">
 // 注释了 ts="lang" 红色提示太多了
 import {useRoute} from "vue-router";
-import {ref, watchEffect} from "vue";
+import {onMounted, ref, watchEffect} from "vue";
 import qs from 'qs';
 import myAxios from '../../plugins/myAxios.ts';
 import {showFailToast, showSuccessToast} from "vant";
@@ -60,8 +60,22 @@ const onSearch = (val) => {
   listUser(val)
 };
 
+//const list = async () => {
+//  const userListData = await myAxios.get('/user/selectUser',{
+//    params:{
+//      pageNum:1,
+//      pageSize:100
+//    }
+//  })
+//  if(userListData.code === 0){
+//    showSuccessToast("请求成功")
+//  }
+//  console.log(userListData.data.records)
+//};
 
-
+onMounted(()=>{
+  //list();
+})
 
 const isMatchModel = ref<boolean>(false)
 
@@ -71,7 +85,7 @@ const loadData = async () => {
   let userListData;
   loading.value=true
     if(isMatchModel.value){
-      const num = 100;
+      const num = 20;
       const userListData = await myAxios.get('/user/match',{
         params:{
           num
@@ -79,11 +93,11 @@ const loadData = async () => {
       })
           .then(function(respose){
             console.log('/user/match succeed',respose)
-            showSuccessToast('请求成功');
+            //showSuccessToast('请求成功');
             return respose?.data;
           }).catch(function (error){
             console.log('/user/match error',error)
-            showFailToast('请求失败');
+            //showFailToast('请求失败');
           })
       console.log(userListData);
       if(userListData){
@@ -94,6 +108,7 @@ const loadData = async () => {
         })
         userList.value = userListData;
       }
+
     }
 
     else {
@@ -104,13 +119,34 @@ const loadData = async () => {
         },
       }).then(function (respose){
         console.log('/user/recommend succeed',respose)
-        showSuccessToast('请求成功');
+        //showSuccessToast('请求成功');
         return respose?.data?.records;
       }).catch(function (error){
         console.log('/user/recommend error',error)
-        showFailToast('请求失败');
+        //showFailToast('请求失败');
       })
-      // console.log(userListData);
+      console.log(userListData)
+      if(userListData === undefined) {
+        const userListData = await myAxios.get('/user/selectUser',{
+          params:{
+            pageNum:1,
+            pageSize:100
+          }
+        })
+        if(userListData.code === 0){
+          //console.log(userListData.data.records);
+          showSuccessToast("请求成功")
+        }
+        if(userListData.data.records){
+          userListData.data.records.forEach(user=>{
+            if(user.tags){
+              user.tags = JSON.parse(user.tags);
+            }
+          })
+          userList.value = userListData.data.records;
+        }
+      }
+       //console.log(userListData);
       if(userListData){
         userListData.forEach(user=>{
           if(user.tags){
@@ -136,5 +172,5 @@ watchEffect(() => {
 
 
 <style scoped>
-
+@import '../../css/image.css';
 </style>
